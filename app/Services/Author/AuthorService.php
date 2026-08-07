@@ -4,12 +4,15 @@ namespace App\Services\Author;
 
 use App\Models\Author\Author;
 use App\Repositories\Interfaces\Author\AuthorInterfaceRepository;
+use App\Repositories\Interfaces\Book\BookInterfaceRepository;
+use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class AuthorService
 {
     public function __construct(
-        protected AuthorInterfaceRepository $authorRepository
+        protected AuthorInterfaceRepository $authorRepository,
+        protected BookInterfaceRepository $bookRepository
     ){}
 
     public function getAll()
@@ -40,6 +43,13 @@ class AuthorService
 
     public function delete(int $id): void
     {
+        $book = $this->bookRepository->findByAuthorId($id);
+
+        if ( ! $book )
+        {
+            throw new Exception('Não é possível excluir um autor que possui livros cadastrados.');
+        }
+
         $this->authorRepository->delete($id);
     }
 

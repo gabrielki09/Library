@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Author\AuthorController;
 use App\Http\Controllers\Book\BookController;
+use App\Http\Controllers\Reader\ReadersController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function() {
@@ -10,4 +11,7 @@ Route::prefix('v1')->group(function() {
 
     Route::resource('book', BookController::class);
     Route::patch('book/restore/{id}', [BookController::class, 'restore']);
+
+    Route::resource('reader', ReadersController::class);
+    Route::patch('reader/restore/{id}', [ReadersController::class, 'restore']);
 });

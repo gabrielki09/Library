@@ -4,9 +4,15 @@ namespace App\Repositories\Eloquent\Book;
 
 use App\Models\Book\Book;
 use App\Repositories\Interfaces\Book\BookInterfaceRepository;
+use App\Repositories\Interfaces\Reader\ReaderInterfaceRepository;
+use Override;
 
 class BookRepository implements BookInterfaceRepository
 {
+    public function __construct(
+        protected ReaderInterfaceRepository $readerRepository
+    ){}
+
     public function getAll()
     {
         return Book::all();
@@ -21,7 +27,7 @@ class BookRepository implements BookInterfaceRepository
             'description' => $data['description'],
             'publication_year' => $data['publication_year'],
             'total_copies' => $data['total_copies'],
-            'available_copies' => $data['available_copies'],
+            'available_copies' => $data['total_copies'],
         ]);
     }
 
@@ -34,7 +40,7 @@ class BookRepository implements BookInterfaceRepository
             'description' => $data['description'],
             'publication_year' => $data['publication_year'],
             'total_copies' => $data['total_copies'],
-            'available_copies' => $data['available_copies'],
+            'available_copies' => $data['total_copies'],
         ]);
         $book->fresh();
 
@@ -55,5 +61,18 @@ class BookRepository implements BookInterfaceRepository
     {
         $book = Book::withTrashed()->find($id);
         $book->restore();
+    }
+
+    public function reserveBook(int $bookId, int $readerId)
+    {
+
+
+    }
+
+    public function findByAuthorId(int $id): ?Book
+    {
+        $book = Book::query()->where('author_id', $id);
+
+        return $book ? $book->first() : null;
     }
 }

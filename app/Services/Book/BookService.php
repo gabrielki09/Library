@@ -4,12 +4,14 @@ namespace App\Services\Book;
 
 use App\Models\Book\Book;
 use App\Repositories\Interfaces\Book\BookInterfaceRepository;
+use App\Repositories\Interfaces\Book\BookLoansInterfaceRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class BookService
 {
     public function __construct(
-        protected BookInterfaceRepository $bookRepository
+        protected BookInterfaceRepository $bookRepository,
+        protected BookLoansInterfaceRepository $bookLoansRepository,
     ){}
 
     public function getAll()
@@ -40,6 +42,7 @@ class BookService
 
     public function delete(int $id): void
     {
+
         $this->bookRepository->delete($id);
     }
 
