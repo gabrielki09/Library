@@ -32,7 +32,7 @@ class AuthorService
         return $this->authorRepository->update($author, $data);
     }
 
-    public function findById(int $id): ?Author
+    public function findById(int $id): Author
     {
         $author = $this->authorRepository->findById($id);
 
@@ -43,14 +43,11 @@ class AuthorService
 
     public function delete(int $id): void
     {
-        $book = $this->bookRepository->findByAuthorId($id);
+        $author = $this->findById($id);
 
-        if ( ! $book )
-        {
-            throw new Exception('Não é possível excluir um autor que possui livros cadastrados.');
-        }
+        if( $author->books()->exists() ) throw new Exception('Não é possível excluir um autor que possui livros cadastrados.');
 
-        $this->authorRepository->delete($id);
+        $this->authorRepository->delete($author->id);
     }
 
     public function restore(int $id): void

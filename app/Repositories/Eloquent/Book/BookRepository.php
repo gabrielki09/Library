@@ -5,7 +5,6 @@ namespace App\Repositories\Eloquent\Book;
 use App\Models\Book\Book;
 use App\Repositories\Interfaces\Book\BookInterfaceRepository;
 use App\Repositories\Interfaces\Reader\ReaderInterfaceRepository;
-use Override;
 
 class BookRepository implements BookInterfaceRepository
 {
@@ -15,7 +14,9 @@ class BookRepository implements BookInterfaceRepository
 
     public function getAll()
     {
-        return Book::all();
+        return Book::query()
+            ->with('author')
+            ->get();
     }
 
     public function store(array $data): Book
@@ -47,26 +48,28 @@ class BookRepository implements BookInterfaceRepository
         return $book;
     }
 
-    public function findById(int $id): ?Book
+    public function findById(int $id, ?bool $forLock = false): ?Book
     {
-        return Book::query()->find($id);
+        $book = Book::query()
+            ->with(['author', 'bookLoans'])
+            ->where('id', $id);
+
+        if ($forLock)
+        {
+            $book->lockForUpdate();
+        }
+
+        return $book->first();
     }
 
     public function delete(int $id): void
     {
-        Book::query()->find($id)?->delete();
+        Book::query()->find($id)->update(['is_active' => false]);
     }
 
     public function restore(int $id): void
     {
-        $book = Book::withTrashed()->find($id);
-        $book->restore();
-    }
-
-    public function reserveBook(int $bookId, int $readerId)
-    {
-
-
+        Book::query()->find($id)->update(['is_active' => true]);
     }
 
     public function findByAuthorId(int $id): ?Book

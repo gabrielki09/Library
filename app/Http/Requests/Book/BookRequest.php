@@ -24,11 +24,11 @@ class BookRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'author_id' => ['required', 'unique:\\App\\Models\\Author,id'],
+            'author_id' => ['required', 'exists:\\App\\Models\\Author\\Author,id'],
             'title' => ['required', 'min:3', 'max:150'],
-            'isbn' => ['required', 'unique:\\App\\Models\\Book,isbn', 'max:20'],
-            'description' => ['sometimes', 'max:1000'],
-            'publication_year' => ['sometimes', 'date_before:today'],
+            'isbn' => ['required', 'unique:\\App\\Models\\Book\\Book,isbn', 'max:20'],
+            'description' => ['sometimes', 'max:100'],
+            'publication_year' => ['nullable', 'integer', 'min:1000', 'max: ' . now()->year],
             'total_copies' => ['sometimes', 'min:1'],
         ];
     }
@@ -37,20 +37,17 @@ class BookRequest extends FormRequest
     {
         return [
             'author_id.required' => 'O identificador do autor é obrigatório.',
-            'author_id.unique' => 'O identificador do autor deve ser único.',
-
+            'author_id.exists' => 'O identificador do autor deve ser um identificador válido.',
             'title.required' => 'O título é obrigatório.',
             'title.min' => 'O título deve conter no mínimo :min caracteres.',
             'title.max' => 'O título deve conter no máximo :max caracteres.',
-
             'isbn.required' => 'O ISBN é obrigatório.',
             'isbn.unique' => 'O ISBN deve ser único.',
             'isbn.max' => 'O ISB deve conter no máximo :max caracteres.',
-
             'description.max' => 'A descrição deve conter no máximo :max caracteres.',
-
-            'publication_year.date_before' => 'A data de publicação não pode ser maior que a data atual.',
-
+            'publication_year.integer' => 'A data de publicação precisa ser um número inteiro.',
+            'publication_year.min' => 'O ano de publicação deve ser no mínimo 1000.',
+            'publication_year.max' => 'O ano de publicação deve ser no máximo o ano atual.',
             'total_copies.min' => 'O total de cópias deve ser no mínimo :min.',
         ];
     }

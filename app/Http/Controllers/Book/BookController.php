@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Book;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Book\BookRequest;
+use App\Http\Requests\Book\ReserveBookRequest;
 use App\Services\Book\BookService;
 use Illuminate\Http\Request;
 
@@ -82,5 +83,10 @@ class BookController extends Controller
         return apiSuccess(
             'Livro reativado com sucesso!',
         );
+    }
+
+    public function reserveBook(ReserveBookRequest $req)
+    {
+
     }
 }

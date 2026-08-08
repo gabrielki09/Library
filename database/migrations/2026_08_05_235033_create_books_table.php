@@ -15,11 +15,11 @@ return new class extends Migration
             $table->id();
             $table->foreignId('author_id')->constrained('authors')->cascadeOnDelete();
             $table->string('title', 150);
-            $table->string('isbn', 20)->unique();
+            $table->string('isbn', 20)->unique('un_book_isbn');
             $table->text('description')->nullable();
             $table->integer('publication_year')->nullable();
-            $table->integer('total_copies')->nullable();
-            $table->integer('available_copies')->nullable();
+            $table->integer('total_copies')->nullable()->default(1);
+            $table->integer('available_copies')->nullable()->default(1);
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });

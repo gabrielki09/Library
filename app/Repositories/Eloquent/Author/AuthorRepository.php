@@ -3,13 +3,16 @@
 namespace App\Repositories\Eloquent\Author;
 
 use App\Models\Author\Author;
+use App\Repositories\Eloquent\AbstractRepository;
 use App\Repositories\Interfaces\Author\AuthorInterfaceRepository;
 
 class AuthorRepository implements AuthorInterfaceRepository
 {
     public function getAll()
     {
-        return Author::all();
+        return Author::query()
+            ->with('books')
+            ->get();
     }
 
     public function store(array $data): Author

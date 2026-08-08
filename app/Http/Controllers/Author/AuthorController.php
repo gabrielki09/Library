@@ -3,9 +3,8 @@
 namespace App\Http\Controllers\Author;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Author\AuthorCreateRequest;
+use App\Http\Requests\Author\AuthorRequest;
 use App\Services\Author\AuthorService;
-use Illuminate\Http\Request;
 
 class AuthorController extends Controller
 {
@@ -29,7 +28,7 @@ class AuthorController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(AuthorCreateRequest $req)
+    public function store(AuthorRequest $req)
     {
         return apiSuccess(
             'Autor cadastrado com sucesso!',
@@ -55,7 +54,7 @@ class AuthorController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(AuthorCreateRequest $req, int $id)
+    public function update(AuthorRequest $req, int $id)
     {
         return apiSuccess(
             'Autor alterado com sucesso!',

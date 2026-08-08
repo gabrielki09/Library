@@ -11,6 +11,7 @@ Route::prefix('v1')->group(function() {
 
     Route::resource('book', BookController::class);
     Route::patch('book/restore/{id}', [BookController::class, 'restore']);
+    Route::post('book/reserve', [BookController::class, 'reserveBook']);
 
     Route::resource('reader', ReadersController::class);
     Route::patch('reader/restore/{id}', [ReadersController::class, 'restore']);
