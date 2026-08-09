@@ -9,7 +9,7 @@ interface BaseInterfaceRepository
     public function getAll();
     public function store(array $data): Model;
     public function update(Model $model, array $data): Model;
-    public function findById(int $id): ?Model;
+    public function findById(int $id, ?bool $forLock): ?Model;
     public function delete(int $id): void;
     public function restore(int $id): void;
 }

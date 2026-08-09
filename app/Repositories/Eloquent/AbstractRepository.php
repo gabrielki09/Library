@@ -29,9 +29,17 @@ abstract class AbstractRepository implements BaseInterfaceRepository
         return $model->fresh();
     }
 
-    public function findById(int $id): ?Model
+    public function findById(int $id, ?bool $forLock): ?Model
     {
-        return $this->model->find($id);
+        $model = $this->model->query()
+                        ->where('id', $id);
+
+        if ( $forLock )
+        {
+            $model->lockForUpdate();
+        }
+
+        return $model->first();
     }
 
     public function delete(int $id): void

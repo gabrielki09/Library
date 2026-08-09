@@ -6,7 +6,6 @@ use App\Models\Book\BookLoans;
 use App\Repositories\Eloquent\AbstractRepository;
 use App\Repositories\Interfaces\Book\BookLoansInterfaceRepository;
 use Illuminate\Database\Eloquent\Model;
-
 class BookLoansRepository extends AbstractRepository implements BookLoansInterfaceRepository
 {
     public function __construct(BookLoans $model)
@@ -19,19 +18,8 @@ class BookLoansRepository extends AbstractRepository implements BookLoansInterfa
         return $this->model->create($data);
     }
 
-    public function findByBookId(int $bookId): ?BookLoans
+    public function findById(int $id, ?bool $forLock): ?Model
     {
-        return BookLoans::query()
-                ->where('book_id', $bookId)
-                ->first();
+        return $this->model->find($id);
     }
-
-    public function findByBookAndReaderId(int $bookId, int $readerId): ?BookLoans
-    {
-        return BookLoans::query()
-                ->where('book_id', $bookId)
-                ->where('reader_id', $readerId)
-                ->first();
-    }
-
 }

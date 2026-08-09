@@ -28,8 +28,8 @@ class BookRequest extends FormRequest
             'title' => ['required', 'min:3', 'max:150'],
             'isbn' => ['required', 'unique:\\App\\Models\\Book\\Book,isbn', 'max:20'],
             'description' => ['sometimes', 'max:100'],
-            'publication_year' => ['nullable', 'integer', 'min:1000', 'max: ' . now()->year],
-            'total_copies' => ['sometimes', 'min:1'],
+            'publication_year' => ['nullable', 'integer', 'min:1000', 'max:' . now()->year],
+            'total_copies' => ['sometimes', 'min:1', 'integer'],
         ];
     }
 
@@ -49,6 +49,7 @@ class BookRequest extends FormRequest
             'publication_year.min' => 'O ano de publicação deve ser no mínimo 1000.',
             'publication_year.max' => 'O ano de publicação deve ser no máximo o ano atual.',
             'total_copies.min' => 'O total de cópias deve ser no mínimo :min.',
+            'total_copies.integer' => 'O total de cópias deve ser um número inteiro',
         ];
     }
 }

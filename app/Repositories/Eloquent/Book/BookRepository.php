@@ -28,7 +28,7 @@ class BookRepository implements BookInterfaceRepository
             'description' => $data['description'],
             'publication_year' => $data['publication_year'],
             'total_copies' => $data['total_copies'],
-            'available_copies' => $data['total_copies'],
+            'available_copies' => $data['available_copies'],
         ]);
     }
 
@@ -41,7 +41,7 @@ class BookRepository implements BookInterfaceRepository
             'description' => $data['description'],
             'publication_year' => $data['publication_year'],
             'total_copies' => $data['total_copies'],
-            'available_copies' => $data['total_copies'],
+            'available_copies' => $data['available_copies'],
         ]);
         $book->fresh();
 

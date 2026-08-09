@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('email')->unique('un_readers_email');
             $table->string('document', 20)->unique('un_readers_document');
             $table->string('phone', 20);
-            $table->enum('status', [array_column(ReadersStatus::cases(), 'value')]);
+            $table->enum('status', array_column(ReadersStatus::cases(), 'value'));
             $table->timestamps();
             $table->softDeletes();
         });

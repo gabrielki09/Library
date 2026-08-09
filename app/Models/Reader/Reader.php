@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
     'phone',
     'status',
 ])]
+
 class Reader extends Model
 {
     use SoftDeletes;

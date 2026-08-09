@@ -6,13 +6,17 @@ use App\Http\Controllers\Reader\ReadersController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function() {
-    Route::resource('author', AuthorController::class);
+    Route::apiResource('author', AuthorController::class);
     Route::patch('author/restore/{id}', [AuthorController::class, 'restore']);
 
-    Route::resource('book', BookController::class);
-    Route::patch('book/restore/{id}', [BookController::class, 'restore']);
-    Route::post('book/reserve', [BookController::class, 'reserveBook']);
+    Route::apiResource('book', BookController::class);
+    Route::controller(BookController::class)->prefix('book')->group(function() {
+        Route::post('reserve', 'reserveBook');
+        Route::patch('restore/{id}','restore');
+        Route::patch('return-book/{loans_id}', 'returnBook');
+        Route::patch('cancel/{loans_id}', 'cancelLoans');
+    });
 
-    Route::resource('reader', ReadersController::class);
+    Route::apiResource('reader', ReadersController::class);
     Route::patch('reader/restore/{id}', [ReadersController::class, 'restore']);
 });

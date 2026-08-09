@@ -3,13 +3,16 @@
 namespace App\Repositories\Eloquent\Reader;
 
 use App\Models\Reader\Reader;
+use App\Reader\ReadersStatus;
 use App\Repositories\Interfaces\Reader\ReaderInterfaceRepository;
 
 class ReaderRepository implements ReaderInterfaceRepository
 {
     public function getAll()
     {
-        return;
+        return Reader::query()
+                ->with('bookLoans')
+                ->get();
     }
 
     public function store(array $data): Reader
@@ -19,7 +22,7 @@ class ReaderRepository implements ReaderInterfaceRepository
             'email' => $data['email'],
             'document' => $data['document'],
             'phone' => $data['phone'],
-            'status' => $data['status'],
+            'status' => ReadersStatus::ACTIVE->value,
         ]);
     }
 

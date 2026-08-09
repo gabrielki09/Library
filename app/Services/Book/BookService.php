@@ -5,9 +5,9 @@ namespace App\Services\Book;
 use App\Book\BookLoansStatus;
 use App\Models\Book\Book;
 use App\Repositories\Interfaces\Book\BookInterfaceRepository;
-use App\Repositories\Interfaces\Book\BookLoansInterfaceRepository;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\DB;
 
 class BookService
 {
@@ -27,14 +27,30 @@ class BookService
 
     public function update(int $id, array $data): Book
     {
-        $book = $this->findById($id);
+        return DB::transaction(function() use ($id, $data) {
+            $book = $this->findById($id, true);
 
-        return $this->bookRepository->update($book, $data);
+            if ( isset($data['total_copies']) )
+            {
+                $openLonas = $book->bookLoans()
+                                ->whereIn('status', [
+                                    BookLoansStatus::LATE->value,
+                                    BookLoansStatus::ACTIVE->value,
+                                ])
+                                ->count();
+
+                if ( $data['total_copies'] < $openLonas ) throw new Exception('A quantidade total de cópias não pode ser menor que a quantidade atualmente emprestada.');
+
+                $data['available_copies'] = $data['total_copies'] - $openLonas;
+            }
+
+           $this->bookRepository->update($book, $data);
+        });
     }
 
     public function findById(int $id, ?bool $forLock = false): Book
     {
-        $book = $this->bookRepository->findById($id);
+        $book = $this->bookRepository->findById($id, $forLock);
 
         if ( ! $book ) throw new ModelNotFoundException('Livro não localizado');
 

@@ -2,6 +2,7 @@
 
 namespace App\Models\Book;
 
+use App\Book\BookLoansStatus;
 use App\Models\Reader\Reader;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
@@ -17,10 +18,14 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
     'returned_at',
     'fine_amount',
 ])]
+
 class BookLoans extends Model
 {
     protected $casts = [
-        'status'
+        'status' => BookLoansStatus::class,
+        'due_date' => 'date',
+        'returned_at' => 'datetime',
+        'fine_amount' => 'decimal:2',
     ];
 
     public function book(): BelongsTo

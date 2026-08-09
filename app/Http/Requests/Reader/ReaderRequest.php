@@ -26,10 +26,10 @@ class ReaderRequest extends FormRequest
     {
         return [
             'name' => ['required', 'min:3', 'max:120'],
-            'email' => ['required', 'email', 'unique:\\App\\Models\\Reader,email'],
-            'document' => ['required', 'unique:\\App\\Models\\Reader,document'],
-            'phone' => ['sometimes', 'max:20'],
-            'status' => ['sometimes', Rule::enum(ReadersStatus::class)],
+            'email' => ['required', 'email', 'unique:\\App\\Models\\Reader\\Reader,email'],
+            'document' => ['required', 'unique:\\App\\Models\\Reader\\Reader,document', 'cpf'],
+            'phone' => ['sometimes', 'max:20', 'celular_com_ddd'],
+            'status' => [$this->isMethod('PUT') ? 'required' : 'sometimes', Rule::enum(ReadersStatus::class)]
         ];
     }
 
@@ -46,10 +46,10 @@ class ReaderRequest extends FormRequest
 
             'document.required' => 'O documento é obrigatório',
             'document.unique' => 'O documento já está cadastrado.',
+            'document.cpf' => 'O documento deve ser um formato válido: ###.###.###-##',
 
-            'phone' => 'O telefone deve conter no máximo :max caracteres.',
-
-            'status.enum' => 'O status deve ser entre: Ativo, Bloqueado ou Inativo',
+            'phone.max' => 'O celular deve conter no máximo :max caracteres.',
+            'phone.celular_com_ddd' => 'O celular deve ser um formato válido: (##) ####-####.',
         ];
     }
 }

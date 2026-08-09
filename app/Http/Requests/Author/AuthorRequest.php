@@ -25,7 +25,7 @@ class AuthorRequest extends FormRequest
         return [
             'name' => ['required', 'min:3', 'max:120'],
             'nationality' => ['sometimes', 'max:80'],
-            'birth_date' => [ 'nullable', 'date_format:Y-m-D'],
+            'birth_date' => ['nullable', 'date_format:Y-m-d', 'before_or_equal:today',],
         ];
     }
 
