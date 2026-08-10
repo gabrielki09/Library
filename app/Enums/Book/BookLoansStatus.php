@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Book;
+namespace App\Enums\Book;
 
 enum BookLoansStatus: string
 {

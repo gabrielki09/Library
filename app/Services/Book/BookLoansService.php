@@ -2,14 +2,14 @@
 
 namespace App\Services\Book;
 
-use App\Book\BookLoansStatus;
+use App\Enums\Book\BookLoansStatus;
 use App\Models\Book\BookLoans;
+use App\Reader\ReadersStatus;
 use App\Repositories\Interfaces\Book\BookLoansInterfaceRepository;
 use App\Services\Reader\ReaderService;
 use Illuminate\Support\Facades\DB;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Facades\Log;
 
 class BookLoansService
 {
@@ -46,13 +46,16 @@ class BookLoansService
     public function store(array $data)
     {
         return DB::transaction(function () use ($data) {
+            $reader = $this->readerService->findById($data['reader_id']);
+
+            if ( $reader->status === ReadersStatus::BLOCKED->value ) throw new Exception('Esse leitor está bloqueado para empréstimo de livros.');
+            if ( $reader->status === ReadersStatus::INACTIVE->value ) throw new Exception('Esse leitor está inativo.');
+
             $book = $this->bookService->findById($data['book_id'], true);
 
             if (! $book->is_active) throw new Exception('Esse livro está inativo e não pode ser emprestado.');
 
             if ($book->available_copies < 1) throw new Exception('Esse livro não possui cópias disponíveis.');
-
-            $reader = $this->readerService->findById($data['reader_id']);
 
             if (
                 $reader->bookLoans()->where('book_id', $data['book_id'])
@@ -65,7 +68,7 @@ class BookLoansService
 
             if ($reader->bookLoans()->where('status', BookLoansStatus::LATE->value)->exists()) throw new Exception('Esse leitor possui um empréstimo atrasado.');
 
-            if ($reader->bookLoans()->where('status', BookLoansStatus::ACTIVE->value)->getResults()->count() >= self::MAX_ACTIVE_LOANS) throw new Exception('Esse leitor possui mais de 3 empréstimos ativos.');
+            if ($reader->bookLoans()->where('status', BookLoansStatus::ACTIVE->value)->count() >= self::MAX_ACTIVE_LOANS) throw new Exception('Esse leitor já atingiu o limite de 3 empréstimos ativos.');
 
             $loan = $this->bookLoansRepository->store([
                 'book_id' => $data['book_id'],

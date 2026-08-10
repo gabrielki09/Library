@@ -25,10 +25,10 @@ class BookRepository implements BookInterfaceRepository
             'author_id' => $data['author_id'],
             'title' => $data['title'],
             'isbn' => $data['isbn'],
-            'description' => $data['description'],
+            'description' => $data['description'] ?? null,
             'publication_year' => $data['publication_year'],
             'total_copies' => $data['total_copies'],
-            'available_copies' => $data['available_copies'],
+            'available_copies' => $data['total_copies'],
         ]);
     }
 
@@ -40,8 +40,8 @@ class BookRepository implements BookInterfaceRepository
             'isbn' => $data['isbn'],
             'description' => $data['description'],
             'publication_year' => $data['publication_year'],
-            'total_copies' => $data['total_copies'],
-            'available_copies' => $data['available_copies'],
+            'total_copies' => $data['total_copies'] ?? $book->total_copies,
+            'available_copies' => $data['available_copies'] ?? $book->available_copies,
         ]);
         $book->fresh();
 

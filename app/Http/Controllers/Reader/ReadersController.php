@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Reader;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Reader\ReaderRequest;
+use App\Http\Requests\Reader\{
+    ReaderCreateRequest,
+    ReaderUpdateRequest
+};
 use App\Services\Reader\ReaderService;
 
 class ReadersController extends Controller
@@ -28,7 +31,7 @@ class ReadersController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(ReaderRequest $req)
+    public function store(ReaderCreateRequest $req)
     {
         return apiSuccess(
             'Leitor cadastrado com sucesso!',
@@ -54,7 +57,7 @@ class ReadersController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(ReaderRequest $req, string $id)
+    public function update(ReaderUpdateRequest $req, string $id)
     {
         return apiSuccess(
             'Leitor alterado com sucesso!',

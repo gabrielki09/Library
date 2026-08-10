@@ -2,12 +2,12 @@
 
 namespace App\Models\Book;
 
-use App\Book\BookLoansStatus;
+use App\Enums\Book\BookLoansStatus;
 use App\Models\Reader\Reader;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[Fillable([
     'book_id',
@@ -21,8 +21,9 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class BookLoans extends Model
 {
+    use SoftDeletes;
+
     protected $casts = [
-        'status' => BookLoansStatus::class,
         'due_date' => 'date',
         'returned_at' => 'datetime',
         'fine_amount' => 'decimal:2',

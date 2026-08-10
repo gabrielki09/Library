@@ -2,7 +2,7 @@
 
 namespace App\Services\Book;
 
-use App\Book\BookLoansStatus;
+use App\Enums\Book\BookLoansStatus;
 use App\Models\Book\Book;
 use App\Repositories\Interfaces\Book\BookInterfaceRepository;
 use Exception;
@@ -32,19 +32,19 @@ class BookService
 
             if ( isset($data['total_copies']) )
             {
-                $openLonas = $book->bookLoans()
+                $openLoans = $book->bookLoans()
                                 ->whereIn('status', [
                                     BookLoansStatus::LATE->value,
                                     BookLoansStatus::ACTIVE->value,
                                 ])
                                 ->count();
 
-                if ( $data['total_copies'] < $openLonas ) throw new Exception('A quantidade total de cópias não pode ser menor que a quantidade atualmente emprestada.');
+                if ( $data['total_copies'] < $openLoans ) throw new Exception('A quantidade total de cópias não pode ser menor que a quantidade atualmente emprestada.');
 
-                $data['available_copies'] = $data['total_copies'] - $openLonas;
+                $data['available_copies'] = $data['total_copies'] - $openLoans;
             }
 
-           $this->bookRepository->update($book, $data);
+           return $this->bookRepository->update($book, $data);
         });
     }
 

@@ -20,10 +20,6 @@ class Reader extends Model
 {
     use SoftDeletes;
 
-    protected $casts = [
-        'status'
-    ];
-
     public function bookLoans(): HasMany
     {
         return $this->hasMany(BookLoans::class, 'reader_id', 'id');

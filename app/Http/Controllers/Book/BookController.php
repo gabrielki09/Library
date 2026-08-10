@@ -3,16 +3,16 @@
 namespace App\Http\Controllers\Book;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Book\BookRequest;
-use App\Http\Requests\Book\ReserveBookRequest;
-use App\Services\Book\BookLoansService;
+use App\Http\Requests\Book\{
+    BookCreateRequest,
+    BookUpdateRequest
+};
 use App\Services\Book\BookService;
 
 class BookController extends Controller
 {
     public function __construct(
-        protected BookService $bookService,
-        protected BookLoansService $bookLoansService
+        protected BookService $bookService
     ){}
 
     /**
@@ -31,7 +31,7 @@ class BookController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(BookRequest $req)
+    public function store(BookCreateRequest $req)
     {
         return apiSuccess(
             'Livro cadastrado com sucesso!',
@@ -57,7 +57,7 @@ class BookController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(BookRequest $req, int $id)
+    public function update(BookUpdateRequest $req, int $id)
     {
         return apiSuccess(
             'Livro alterado com sucesso!',
@@ -83,42 +83,6 @@ class BookController extends Controller
         $this->bookService->restore($id);
         return apiSuccess(
             'Livro reativado com sucesso!',
-        );
-    }
-
-    public function reserveBook(ReserveBookRequest $req)
-    {
-        $bookLoans = $this->bookLoansService->store($req->validated());
-
-        return apiSuccess(
-            'Livro reservado com sucesso!',
-            [
-                'loans' => $bookLoans
-            ]
-        );
-    }
-
-    public function returnBook(int $loansId)
-    {
-        $returnedBook = $this->bookLoansService->returnBook($loansId);
-
-        return apiSuccess(
-            'Livro devolvido com sucesso!',
-            [
-                'loans' => $returnedBook
-            ]
-        );
-    }
-
-    public function cancelLoans(int $loansId)
-    {
-        $canceledLoans = $this->bookLoansService->cancelLoans($loansId);
-
-        return apiSuccess(
-            'Empréstimo cancelado com com sucesso!',
-            [
-                'loans' => $canceledLoans
-            ]
         );
     }
 }

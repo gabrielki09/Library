@@ -2,7 +2,7 @@
 
 namespace App\Services\Reader;
 
-use App\Book\BookLoansStatus;
+use App\Enums\Book\BookLoansStatus;
 use App\Models\Reader\Reader;
 use App\Repositories\Interfaces\Reader\ReaderInterfaceRepository;
 use Exception;

@@ -25,7 +25,7 @@ class ReserveBookRequest extends FormRequest
         return [
             'book_id' => ['required', 'exists:\\App\\Models\\Book\\Book,id'],
             'reader_id' => ['required', 'exists:\\App\\Models\\Reader\\Reader,id'],
-            'due_date' => ['required', 'date_format:Y-m-d', 'after:today'],
+            'due_date' => ['required', 'date_format:Y-m-d', 'after_or_equal:today'],
         ];
     }
 
@@ -38,7 +38,7 @@ class ReserveBookRequest extends FormRequest
             'reader_id.exists' => 'O identificador do leitor precisa ser um identificador válido.',
             'due_date.required' => 'A data de vencimento é obrigatória',
             'due_date.date_format' => 'A data de vencimento deve estar no formato Y-m-d.',
-            'due_date.after' => 'A data de vencimento não pode ser inferir ao dia atual.',
+            'due_date.after_or_equal' => 'A data de vencimento não pode ser inferir ao dia atual.',
         ];
     }
 }

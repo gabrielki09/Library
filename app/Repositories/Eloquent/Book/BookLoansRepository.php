@@ -20,6 +20,13 @@ class BookLoansRepository extends AbstractRepository implements BookLoansInterfa
 
     public function findById(int $id, ?bool $forLock): ?Model
     {
-        return $this->model->find($id);
+        $loans = $this->model->query()->where('id', $id);
+
+        if ( $forLock )
+        {
+            $loans->lockForUpdate();
+        }
+
+        return $loans->first();
     }
 }

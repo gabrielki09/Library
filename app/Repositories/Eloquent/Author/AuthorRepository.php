@@ -19,8 +19,8 @@ class AuthorRepository implements AuthorInterfaceRepository
     {
         return Author::query()->create([
             'name' => $data['name'],
-            'nationality' => $data['nationality'],
-            'birth_date' => $data['birth_date']
+            'nationality' => $data['nationality'] ?? null,
+            'birth_date' => $data['birth_date'] ?? null,
         ]);
     }
 
@@ -28,8 +28,8 @@ class AuthorRepository implements AuthorInterfaceRepository
     {
         $author->update([
             'name' => $data['name'],
-            'nationality' => $data['nationality'],
-            'birth_date' => $data['birth_date']
+            'nationality' => $data['nationality'] ?? null,
+            'birth_date' => $data['birth_date'] ?? null,
         ]);
         $author->fresh();
 

@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
-use App\Book\BookLoansStatus;
+use App\Enums\Book\BookLoansStatus;
 use Illuminate\Support\Facades\DB;
 
 #[Signature('book-loans:mark-late')]
@@ -18,7 +18,7 @@ class MarkLateBookCommand extends Command
      */
     public function handle()
     {
-        $update = DB::connection('postgres')->table('book_loans')
+        $update = DB::table('book_loans')
         ->where('due_date', '<', now()->toDateString())
         ->whereNotIn('status', [
             'returned',

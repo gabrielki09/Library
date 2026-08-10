@@ -7,7 +7,7 @@ use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class ReaderRequest extends FormRequest
+class ReaderUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,12 +24,14 @@ class ReaderRequest extends FormRequest
      */
     public function rules(): array
     {
+        $reader = $this->route('reader');
+
         return [
             'name' => ['required', 'min:3', 'max:120'],
-            'email' => ['required', 'email', 'unique:\\App\\Models\\Reader\\Reader,email'],
-            'document' => ['required', 'unique:\\App\\Models\\Reader\\Reader,document', 'cpf'],
-            'phone' => ['sometimes', 'max:20', 'celular_com_ddd'],
-            'status' => [$this->isMethod('PUT') ? 'required' : 'sometimes', Rule::enum(ReadersStatus::class)]
+            'email' => ['required', 'email', Rule::unique('readers', 'email')->ignore($reader)],
+            'document' => ['required', Rule::unique('readers', 'document')->ignore($reader)],
+            'phone' => ['required', 'max:20', 'celular'],
+            'status' => ['required', Rule::enum(ReadersStatus::class)]
         ];
     }
 
@@ -48,8 +50,9 @@ class ReaderRequest extends FormRequest
             'document.unique' => 'O documento já está cadastrado.',
             'document.cpf' => 'O documento deve ser um formato válido: ###.###.###-##',
 
+            'phone.required' => 'O celular do leitor é obrigatório.',
             'phone.max' => 'O celular deve conter no máximo :max caracteres.',
-            'phone.celular_com_ddd' => 'O celular deve ser um formato válido: (##) ####-####.',
+            'phone.celular' => 'O celular deve ser um formato válido: (##) ####-####.',
         ];
     }
 }

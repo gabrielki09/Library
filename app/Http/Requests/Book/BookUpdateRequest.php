@@ -4,9 +4,10 @@ namespace App\Http\Requests\Book;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Date;
 
-class BookRequest extends FormRequest
+class BookUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,7 +27,7 @@ class BookRequest extends FormRequest
         return [
             'author_id' => ['required', 'exists:\\App\\Models\\Author\\Author,id'],
             'title' => ['required', 'min:3', 'max:150'],
-            'isbn' => ['required', 'unique:\\App\\Models\\Book\\Book,isbn', 'max:20'],
+            'isbn' => ['required', 'max:20', Rule::unique('books', 'isbn', )->ignore($this->route('book'))],
             'description' => ['sometimes', 'max:100'],
             'publication_year' => ['nullable', 'integer', 'min:1000', 'max:' . now()->year],
             'total_copies' => ['sometimes', 'min:1', 'integer'],

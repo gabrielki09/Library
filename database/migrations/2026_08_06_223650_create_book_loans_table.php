@@ -1,6 +1,6 @@
 <?php
 
-use App\Book\BookLoansStatus;
+use App\Enums\Book\BookLoansStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('book_id')->constrained('books')->cascadeOnDelete();
             $table->foreignId('reader_id')->constrained('readers')->cascadeOnDelete();
-            $table->enum('status', [array_column(BookLoansStatus::cases(), 'value')]);
+            $table->enum('status', array_column(BookLoansStatus::cases(), 'value'));
             $table->timestamp('loan_date');
             $table->date('due_date');
             $table->timestamp('returned_at')->nullable();
