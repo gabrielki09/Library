@@ -21,14 +21,15 @@ class BookRepository implements BookInterfaceRepository
 
     public function store(array $data): Book
     {
+        $totalCopies = $data['total_copies'] ?? 1;
         return Book::query()->create([
             'author_id' => $data['author_id'],
             'title' => $data['title'],
             'isbn' => $data['isbn'],
             'description' => $data['description'] ?? null,
             'publication_year' => $data['publication_year'],
-            'total_copies' => $data['total_copies'],
-            'available_copies' => $data['total_copies'],
+            'total_copies' => $totalCopies,
+            'available_copies' => $totalCopies,
         ]);
     }
 
@@ -43,9 +44,8 @@ class BookRepository implements BookInterfaceRepository
             'total_copies' => $data['total_copies'] ?? $book->total_copies,
             'available_copies' => $data['available_copies'] ?? $book->available_copies,
         ]);
-        $book->fresh();
 
-        return $book;
+        return $book->fresh();
     }
 
     public function findById(int $id, ?bool $forLock = false): ?Book

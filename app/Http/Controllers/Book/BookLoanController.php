@@ -4,15 +4,15 @@ namespace App\Http\Controllers\Book;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Book\ReserveBookRequest;
-use App\Services\Book\BookLoansService;
+use App\Services\Book\BookLoanService;
 
-class BookLoansController extends Controller
+class BookLoanController extends Controller
 {
     public function __construct(
-        protected BookLoansService $bookLoansService
+        protected BookLoanService $bookLoansService
     ){}
 
-    public function reserveBook(ReserveBookRequest $req)
+    public function store(ReserveBookRequest $req)
     {
         $bookLoans = $this->bookLoansService->store($req->validated());
 

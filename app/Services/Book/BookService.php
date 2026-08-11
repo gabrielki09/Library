@@ -3,6 +3,7 @@
 namespace App\Services\Book;
 
 use App\Enums\Book\BookLoansStatus;
+use App\Exceptions\BusinessRuleException;
 use App\Models\Book\Book;
 use App\Repositories\Interfaces\Book\BookInterfaceRepository;
 use Exception;
@@ -39,7 +40,7 @@ class BookService
                                 ])
                                 ->count();
 
-                if ( $data['total_copies'] < $openLoans ) throw new Exception('A quantidade total de cópias não pode ser menor que a quantidade atualmente emprestada.');
+                if ( $data['total_copies'] < $openLoans ) throw new BusinessRuleException('A quantidade total de cópias não pode ser menor que a quantidade atualmente emprestada.');
 
                 $data['available_copies'] = $data['total_copies'] - $openLoans;
             }
@@ -68,7 +69,7 @@ class BookService
             ])
             ->exists();
 
-        if ( $hasOpenLoans ) throw new Exception('Livro com empréstimo em aberto não pode ser excluído.');
+        if ( $hasOpenLoans ) throw new BusinessRuleException('Livro com empréstimo em aberto não pode ser excluído.');
 
         $this->bookRepository->delete($id);
     }

@@ -31,9 +31,9 @@ class AuthorRepository implements AuthorInterfaceRepository
             'nationality' => $data['nationality'] ?? null,
             'birth_date' => $data['birth_date'] ?? null,
         ]);
-        $author->fresh();
 
-        return $author;
+        return $author->fresh();
+
     }
 
     public function findById(int $id): ?Author

@@ -3,9 +3,9 @@
 namespace App\Services\Reader;
 
 use App\Enums\Book\BookLoansStatus;
+use App\Exceptions\BusinessRuleException;
 use App\Models\Reader\Reader;
 use App\Repositories\Interfaces\Reader\ReaderInterfaceRepository;
-use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ReaderService
@@ -32,9 +32,9 @@ class ReaderService
         return $reader;
     }
 
-    public function findById(int $id): Reader
+    public function findById(int $id, ?bool $forLock = false): Reader
     {
-        $reader = $this->readerRepository->findById($id);
+        $reader = $this->readerRepository->findById($id, $forLock);
 
         if ( ! $reader ) throw new ModelNotFoundException('Leitor não localizado.');
 
@@ -45,7 +45,7 @@ class ReaderService
     {
         $reader = $this->findById($id);
 
-        if ( $this->hasOpenBookLoans($reader) ) throw new Exception('Leitor com empréstimo em aberto não pode ser excluído.');
+        if ( $this->hasOpenBookLoans($reader) ) throw new BusinessRuleException('Leitor com empréstimo em aberto não pode ser excluído.');
 
         $this->readerRepository->delete($id);
     }

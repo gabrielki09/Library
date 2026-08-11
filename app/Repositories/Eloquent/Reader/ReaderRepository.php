@@ -10,9 +10,7 @@ class ReaderRepository implements ReaderInterfaceRepository
 {
     public function getAll()
     {
-        return Reader::query()
-                ->with('bookLoans')
-                ->get();
+        return Reader::query()->with('bookLoans')->get();
     }
 
     public function store(array $data): Reader
@@ -35,15 +33,20 @@ class ReaderRepository implements ReaderInterfaceRepository
             'phone' => $data['phone'],
             'status' => $data['status'],
         ]);
-        $reader->fresh();
 
-        return $reader;
-
+        return $reader->fresh();
     }
 
-    public function findById(int $id): ?Reader
+    public function findById(int $id, ?bool $forLock = false): ?Reader
     {
-        return Reader::query()->find($id);
+        $reader = Reader::query()->whereKey($id);
+
+        if ( $forLock )
+        {
+            $reader->lockForUpdate();
+        }
+
+        return $reader->first();
     }
 
     public function delete(int $id): void

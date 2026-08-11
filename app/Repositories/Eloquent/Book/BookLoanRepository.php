@@ -6,7 +6,8 @@ use App\Models\Book\BookLoans;
 use App\Repositories\Eloquent\AbstractRepository;
 use App\Repositories\Interfaces\Book\BookLoansInterfaceRepository;
 use Illuminate\Database\Eloquent\Model;
-class BookLoansRepository extends AbstractRepository implements BookLoansInterfaceRepository
+
+class BookLoanRepository extends AbstractRepository implements BookLoansInterfaceRepository
 {
     public function __construct(BookLoans $model)
     {

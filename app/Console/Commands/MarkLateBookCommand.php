@@ -13,12 +13,12 @@ use Illuminate\Support\Facades\DB;
 class MarkLateBookCommand extends Command
 {
 
-    /**
+/**
      * Execute the console command.
      */
     public function handle()
     {
-        $update = DB::table('book_loans')
+        $update = DB::connection('postgres')->table('book_loans')
         ->where('due_date', '<', now()->toDateString())
         ->whereNotIn('status', [
             'returned',

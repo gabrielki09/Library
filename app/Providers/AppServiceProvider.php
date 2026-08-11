@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use App\Repositories\Eloquent\Author\AuthorRepository;
-use App\Repositories\Eloquent\Book\BookLoansRepository;
+use App\Repositories\Eloquent\Book\BookLoanRepository;
 use App\Repositories\Eloquent\Book\BookRepository;
 use App\Repositories\Eloquent\Reader\ReaderRepository;
 use App\Repositories\Interfaces\Author\AuthorInterfaceRepository;
@@ -36,7 +36,7 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->bind(
             BookLoansInterfaceRepository::class,
-            BookLoansRepository::class
+            BookLoanRepository::class
         );
     }
 

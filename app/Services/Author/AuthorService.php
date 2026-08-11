@@ -2,10 +2,10 @@
 
 namespace App\Services\Author;
 
+use App\Exceptions\BusinessRuleException;
 use App\Models\Author\Author;
 use App\Repositories\Interfaces\Author\AuthorInterfaceRepository;
 use App\Repositories\Interfaces\Book\BookInterfaceRepository;
-use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class AuthorService
@@ -45,7 +45,7 @@ class AuthorService
     {
         $author = $this->findById($id);
 
-        if( $author->books()->exists() ) throw new Exception('Não é possível excluir um autor que possui livros cadastrados.');
+        if( $author->books()->exists() ) throw new BusinessRuleException('Não é possível excluir um autor que possui livros cadastrados.');
 
         $this->authorRepository->delete($author->id);
     }

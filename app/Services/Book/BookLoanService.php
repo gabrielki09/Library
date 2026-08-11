@@ -3,15 +3,15 @@
 namespace App\Services\Book;
 
 use App\Enums\Book\BookLoansStatus;
+use App\Exceptions\BusinessRuleException;
 use App\Models\Book\BookLoans;
 use App\Reader\ReadersStatus;
 use App\Repositories\Interfaces\Book\BookLoansInterfaceRepository;
 use App\Services\Reader\ReaderService;
 use Illuminate\Support\Facades\DB;
-use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
-class BookLoansService
+class BookLoanService
 {
     private const MAX_ACTIVE_LOANS = 3;
     private const DEFAULT_DELAY_VALUE = 2;
@@ -46,16 +46,16 @@ class BookLoansService
     public function store(array $data)
     {
         return DB::transaction(function () use ($data) {
-            $reader = $this->readerService->findById($data['reader_id']);
+            $reader = $this->readerService->findById($data['reader_id'], true);
 
-            if ( $reader->status === ReadersStatus::BLOCKED->value ) throw new Exception('Esse leitor está bloqueado para empréstimo de livros.');
-            if ( $reader->status === ReadersStatus::INACTIVE->value ) throw new Exception('Esse leitor está inativo.');
+            if ( $reader->status === ReadersStatus::BLOCKED->value ) throw new BusinessRuleException('Esse leitor está bloqueado para empréstimo de livros.');
+            if ( $reader->status === ReadersStatus::INACTIVE->value ) throw new BusinessRuleException('Esse leitor está inativo.');
 
             $book = $this->bookService->findById($data['book_id'], true);
 
-            if (! $book->is_active) throw new Exception('Esse livro está inativo e não pode ser emprestado.');
+            if (! $book->is_active) throw new BusinessRuleException('Esse livro está inativo e não pode ser emprestado.');
 
-            if ($book->available_copies < 1) throw new Exception('Esse livro não possui cópias disponíveis.');
+            if ($book->available_copies < 1) throw new BusinessRuleException('Esse livro não possui cópias disponíveis.');
 
             if (
                 $reader->bookLoans()->where('book_id', $data['book_id'])
@@ -64,11 +64,11 @@ class BookLoansService
                     BookLoansStatus::LATE->value
                 ])
                 ->exists()
-            ) throw new Exception('Esse leitor já possui um empréstimo desse livro.');
+            ) throw new BusinessRuleException('Esse leitor já possui um empréstimo desse livro.');
 
-            if ($reader->bookLoans()->where('status', BookLoansStatus::LATE->value)->exists()) throw new Exception('Esse leitor possui um empréstimo atrasado.');
+            if ($reader->bookLoans()->where('status', BookLoansStatus::LATE->value)->exists()) throw new BusinessRuleException('Esse leitor possui um empréstimo atrasado.');
 
-            if ($reader->bookLoans()->where('status', BookLoansStatus::ACTIVE->value)->count() >= self::MAX_ACTIVE_LOANS) throw new Exception('Esse leitor já atingiu o limite de 3 empréstimos ativos.');
+            if ($reader->bookLoans()->where('status', BookLoansStatus::ACTIVE->value)->count() >= self::MAX_ACTIVE_LOANS) throw new BusinessRuleException('Esse leitor já atingiu o limite de 3 empréstimos ativos.');
 
             $loan = $this->bookLoansRepository->store([
                 'book_id' => $data['book_id'],
@@ -91,9 +91,9 @@ class BookLoansService
         return DB::transaction(function () use ($loansId) {
             $loans = $this->findById($loansId, true);
 
-            if ($loans->status === BookLoansStatus::RETURNED->value) throw new Exception('Esse empréstimo já foi devolvido.');
+            if ($loans->status === BookLoansStatus::RETURNED->value) throw new BusinessRuleException('Esse empréstimo já foi devolvido.');
 
-            if ($loans->status === BookLoansStatus::CANCELED->value) throw new Exception('Esse empréstimo está cancelado.');
+            if ($loans->status === BookLoansStatus::CANCELED->value) throw new BusinessRuleException('Esse empréstimo está cancelado.');
 
             $fineAmount = $this->calculateFine($loans);
 
@@ -114,11 +114,11 @@ class BookLoansService
         return DB::transaction(function () use ($loansId) {
             $loans = $this->findById($loansId, true);
 
-            if ($loans->status === BookLoansStatus::CANCELED->value) throw new Exception('Esse empréstimo já está cancelado.');
+            if ($loans->status === BookLoansStatus::CANCELED->value) throw new BusinessRuleException('Esse empréstimo já está cancelado.');
 
-            if ($loans->status === BookLoansStatus::RETURNED->value) throw new Exception('Empréstimos devolvidos não podem ser cancelados.');
+            if ($loans->status === BookLoansStatus::RETURNED->value) throw new BusinessRuleException('Empréstimos devolvidos não podem ser cancelados.');
 
-            if ($loans->status === BookLoansStatus::LATE->value) throw new Exception('Empréstimos em atraso não podem ser cancelados.');
+            if ($loans->status === BookLoansStatus::LATE->value) throw new BusinessRuleException('Empréstimos em atraso não podem ser cancelados.');
 
             $this->bookLoansRepository->update($loans, [
                 'status' => BookLoansStatus::CANCELED->value
