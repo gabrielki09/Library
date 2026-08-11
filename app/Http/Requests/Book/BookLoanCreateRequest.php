@@ -2,10 +2,14 @@
 
 namespace App\Http\Requests\Book;
 
+use App\Models\Book\Book;
+use App\Models\Reader\Reader;
 use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class ReserveBookRequest extends FormRequest
+class BookLoanCreateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,8 +27,18 @@ class ReserveBookRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'book_id' => ['required', 'exists:\\App\\Models\\Book\\Book,id'],
-            'reader_id' => ['required', 'exists:\\App\\Models\\Reader\\Reader,id'],
+            'book_id' => [
+                'required',
+                Rule::exists(Book::class, 'id')
+                    ->where(fn(Builder $q) => $q->where('is_active', '=', true))
+            ],
+
+            'reader_id' => [
+                'required',
+                Rule::exists(Reader::class, 'id')
+                    ->where(fn(Builder $q) => $q->whereNull('deleted_at'))
+            ],
+
             'due_date' => ['required', 'date_format:Y-m-d', 'after_or_equal:today'],
         ];
     }

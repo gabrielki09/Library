@@ -2,7 +2,6 @@
 
 namespace App\Models\Book;
 
-use App\Enums\Book\BookLoansStatus;
 use App\Models\Reader\Reader;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
@@ -19,7 +18,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
     'fine_amount',
 ])]
 
-class BookLoans extends Model
+class BookLoan extends Model
 {
     use SoftDeletes;
 

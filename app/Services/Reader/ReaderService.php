@@ -2,11 +2,12 @@
 
 namespace App\Services\Reader;
 
-use App\Enums\Book\BookLoansStatus;
+use App\Enums\Book\BookLoanStatus;
 use App\Exceptions\BusinessRuleException;
 use App\Models\Reader\Reader;
 use App\Repositories\Interfaces\Reader\ReaderInterfaceRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\DB;
 
 class ReaderService
 {
@@ -27,9 +28,14 @@ class ReaderService
 
     public function update(int $id, array $data): Reader
     {
-        $reader = $this->readerRepository->update($this->findById($id), $data);
+        return DB::transaction(function() use ($id, $data) {
+            $reader = $this->findById($id, true);
 
-        return $reader;
+            return $this->readerRepository->update(
+                $reader,
+                $data
+            );
+        });
     }
 
     public function findById(int $id, ?bool $forLock = false): Reader
@@ -43,11 +49,13 @@ class ReaderService
 
     public function delete(int $id): void
     {
-        $reader = $this->findById($id);
+        DB::transaction(function() use ($id) {
+            $reader = $this->findById($id, true);
 
-        if ( $this->hasOpenBookLoans($reader) ) throw new BusinessRuleException('Leitor com empréstimo em aberto não pode ser excluído.');
+            if ( $this->hasOpenBookLoans($reader) ) throw new BusinessRuleException('Leitor com empréstimo em aberto não pode ser excluído.');
 
-        $this->readerRepository->delete($id);
+            $this->readerRepository->delete($id);
+        });
     }
 
     public function restore(int $id): void
@@ -59,8 +67,8 @@ class ReaderService
     {
         return $reader->bookLoans()
             ->whereIn('status', [
-                BookLoansStatus::ACTIVE->value,
-                BookLoansStatus::LATE->value
+                BookLoanStatus::ACTIVE->value,
+                BookLoanStatus::LATE->value
             ])
             ->exists();
     }

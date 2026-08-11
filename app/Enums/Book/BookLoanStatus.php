@@ -2,7 +2,7 @@
 
 namespace App\Enums\Book;
 
-enum BookLoansStatus: string
+enum BookLoanStatus: string
 {
     case ACTIVE = 'active';
     case RETURNED = 'returned';

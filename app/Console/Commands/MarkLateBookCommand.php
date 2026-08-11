@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
-use App\Enums\Book\BookLoansStatus;
+use App\Enums\Book\BookLoanStatus;
 use Illuminate\Support\Facades\DB;
 
 #[Signature('book-loans:mark-late')]
@@ -18,17 +18,13 @@ class MarkLateBookCommand extends Command
      */
     public function handle()
     {
-        $update = DB::connection('postgres')->table('book_loans')
-        ->where('due_date', '<', now()->toDateString())
-        ->whereNotIn('status', [
-            'returned',
-            'late',
-            'canceled',
-        ])
-        ->update([
-            'status' => BookLoansStatus::LATE->value,
-            'updated_at' => now()
-        ]);
+        $update = DB::table('book_loans')
+            ->where('due_date', '<', now()->toDateString())
+            ->where('status', BookLoanStatus::ACTIVE->value)
+            ->update([
+                'status' => BookLoanStatus::LATE->value,
+                'updated_at' => now()
+            ]);
 
         $this->info("Empréstimos marcados como atrasados: {$update}");
 

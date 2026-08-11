@@ -3,47 +3,47 @@
 namespace App\Http\Controllers\Book;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Book\ReserveBookRequest;
+use App\Http\Requests\Book\BookLoanCreateRequest;
 use App\Services\Book\BookLoanService;
 
 class BookLoanController extends Controller
 {
     public function __construct(
-        protected BookLoanService $bookLoansService
+        protected BookLoanService $bookLoanService
     ){}
 
-    public function store(ReserveBookRequest $req)
+    public function store(BookLoanCreateRequest $req)
     {
-        $bookLoans = $this->bookLoansService->store($req->validated());
+        $bookLoans = $this->bookLoanService->store($req->validated());
 
         return apiSuccess(
-            'Livro reservado com sucesso!',
+            'Empréstimo realizado com sucesso!',
             [
-                'loans' => $bookLoans
+                'loan' => $bookLoans
             ]
         );
     }
 
-    public function returnBook(int $loansId)
+    public function returnBook(int $loanId)
     {
-        $returnedBook = $this->bookLoansService->returnBook($loansId);
+        $returnedBook = $this->bookLoanService->returnBook($loanId);
 
         return apiSuccess(
             'Livro devolvido com sucesso!',
             [
-                'loans' => $returnedBook
+                'loan' => $returnedBook
             ]
         );
     }
 
-    public function cancelLoans(int $loansId)
+    public function cancelLoans(int $loanId)
     {
-        $canceledLoans = $this->bookLoansService->cancelLoans($loansId);
+        $canceledLoan = $this->bookLoanService->cancelLoans($loanId);
 
         return apiSuccess(
             'Empréstimo cancelado com sucesso!',
             [
-                'loans' => $canceledLoans
+                'loan' => $canceledLoan
             ]
         );
     }

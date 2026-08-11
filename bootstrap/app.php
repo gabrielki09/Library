@@ -22,7 +22,10 @@ return Application::configure(basePath: dirname(__DIR__))
             BusinessRuleException $e,
             Request $req
         ) {
-            return apiError($e->getMessage(), 422);
+            return apiError(
+                message: $e->getMessage(),
+                status: 422
+            );
         });
 
         $exceptions->shouldRenderJsonWhen(

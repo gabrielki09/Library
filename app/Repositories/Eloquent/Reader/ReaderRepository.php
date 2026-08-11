@@ -26,13 +26,7 @@ class ReaderRepository implements ReaderInterfaceRepository
 
     public function update(Reader $reader, array $data): Reader
     {
-        $reader->update([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'document' => $data['document'],
-            'phone' => $data['phone'],
-            'status' => $data['status'],
-        ]);
+        $reader->update($data);
 
         return $reader->fresh();
     }
@@ -56,7 +50,7 @@ class ReaderRepository implements ReaderInterfaceRepository
 
     public function restore(int $id): void
     {
-        $reader = Reader::withTrashed()->find($id);
+        $reader = Reader::withTrashed()->findOrFail($id);
         $reader->restore();
     }
 }

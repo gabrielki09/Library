@@ -11,8 +11,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 class AuthorService
 {
     public function __construct(
-        protected AuthorInterfaceRepository $authorRepository,
-        protected BookInterfaceRepository $bookRepository
+        protected AuthorInterfaceRepository $authorRepository
     ){}
 
     public function getAll()
@@ -22,7 +21,11 @@ class AuthorService
 
     public function store(array $data): Author
     {
-        return $this->authorRepository->store($data);
+        return $this->authorRepository->store([
+            'name' => $data['name'],
+            'nationality' => $data['nationality'] ?? null,
+            'birth_date' => $data['birth_date'] ?? null,
+        ]);
     }
 
     public function update(int $id, array $data): Author

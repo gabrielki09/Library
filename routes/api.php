@@ -18,12 +18,12 @@ Route::prefix('v1')->group(function () {
     Route::patch('books/restore/{id}', [BookController::class, 'restore']);
 
 
-    Route::prefix('books-loans')
+    Route::prefix('book-loans')
         ->controller(BookLoanController::class)
         ->group(function () {
             Route::post('/', 'store');
-            Route::patch('{loans_id}/return', 'returnBook');
-            Route::patch('{loans_id}/cancel', 'cancelLoans');
+            Route::patch('{loanId}/return', 'returnBook');
+            Route::patch('{loanId}/cancel', 'cancelLoans');
         });
 
     Route::apiResource('readers', ReadersController::class);

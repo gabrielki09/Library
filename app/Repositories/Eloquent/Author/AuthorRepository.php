@@ -3,7 +3,6 @@
 namespace App\Repositories\Eloquent\Author;
 
 use App\Models\Author\Author;
-use App\Repositories\Eloquent\AbstractRepository;
 use App\Repositories\Interfaces\Author\AuthorInterfaceRepository;
 
 class AuthorRepository implements AuthorInterfaceRepository
@@ -17,20 +16,12 @@ class AuthorRepository implements AuthorInterfaceRepository
 
     public function store(array $data): Author
     {
-        return Author::query()->create([
-            'name' => $data['name'],
-            'nationality' => $data['nationality'] ?? null,
-            'birth_date' => $data['birth_date'] ?? null,
-        ]);
+        return Author::query()->create($data);
     }
 
     public function update(Author $author, array $data): Author
     {
-        $author->update([
-            'name' => $data['name'],
-            'nationality' => $data['nationality'] ?? null,
-            'birth_date' => $data['birth_date'] ?? null,
-        ]);
+        $author->update($data);
 
         return $author->fresh();
 
@@ -48,7 +39,7 @@ class AuthorRepository implements AuthorInterfaceRepository
 
     public function restore(int $id): void
     {
-        $author = Author::withTrashed()->find($id);
+        $author = Author::withTrashed()->findOrFail($id);
         $author->restore();
     }
 }

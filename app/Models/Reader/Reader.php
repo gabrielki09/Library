@@ -2,7 +2,7 @@
 
 namespace App\Models\Reader;
 
-use App\Models\Book\BookLoans;
+use App\Models\Book\BookLoan;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -22,6 +22,6 @@ class Reader extends Model
 
     public function bookLoans(): HasMany
     {
-        return $this->hasMany(BookLoans::class, 'reader_id', 'id');
+        return $this->hasMany(BookLoan::class, 'reader_id', 'id');
     }
 }

@@ -2,9 +2,11 @@
 
 namespace App\Http\Requests\Book;
 
+use App\Models\Author\Author;
 use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rules\Date;
+use Illuminate\Validation\Rule;
 
 class BookCreateRequest extends FormRequest
 {
@@ -24,7 +26,11 @@ class BookCreateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'author_id' => ['required', 'exists:\\App\\Models\\Author\\Author,id'],
+            'author_id' => [
+                'required',
+                Rule::exists(Author::class, 'id')
+                    ->where(fn(Builder $q) => $q->whereNull('deleted_at'))
+            ],
             'title' => ['required', 'min:3', 'max:150'],
             'isbn' => ['required', 'unique:\\App\\Models\\Book\\Book,isbn', 'max:20'],
             'description' => ['sometimes', 'max:100'],

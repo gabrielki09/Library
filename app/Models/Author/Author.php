@@ -8,11 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-#[Fillable(
+#[Fillable([
     'name',
     'nationality',
     'birth_date',
-)]
+])]
 class Author extends Model
 {
     use SoftDeletes;

@@ -2,14 +2,14 @@
 
 namespace App\Repositories\Eloquent\Book;
 
-use App\Models\Book\BookLoans;
+use App\Models\Book\BookLoan;
 use App\Repositories\Eloquent\AbstractRepository;
-use App\Repositories\Interfaces\Book\BookLoansInterfaceRepository;
+use App\Repositories\Interfaces\Book\BookLoanInterfaceRepository;
 use Illuminate\Database\Eloquent\Model;
 
-class BookLoanRepository extends AbstractRepository implements BookLoansInterfaceRepository
+class BookLoanRepository extends AbstractRepository implements BookLoanInterfaceRepository
 {
-    public function __construct(BookLoans $model)
+    public function __construct(BookLoan $model)
     {
         parent::__construct($model);
     }
@@ -21,13 +21,13 @@ class BookLoanRepository extends AbstractRepository implements BookLoansInterfac
 
     public function findById(int $id, ?bool $forLock): ?Model
     {
-        $loans = $this->model->query()->where('id', $id);
+        $loan = $this->model->query()->where('id', $id);
 
         if ( $forLock )
         {
-            $loans->lockForUpdate();
+            $loan->lockForUpdate();
         }
 
-        return $loans->first();
+        return $loan->first();
     }
 }

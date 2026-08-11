@@ -37,7 +37,6 @@ class ReaderCreateRequest extends FormRequest
             'name.min' => 'O nome deve conter no mínimo :min caracteres.',
             'name.max' => 'O nome deve conter no máximo :max caracteres.',
 
-            'email.required' => 'O e-mail',
             'email.email' => 'O e-mail deve estar em um formato válido.',
             'email.unique' => 'Este e-mail já está cadastrado.',
 
